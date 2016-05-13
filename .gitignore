@@ -1,2 +1,4 @@
 # igonre images
 *.png
+*.ppm
+.*pgm
