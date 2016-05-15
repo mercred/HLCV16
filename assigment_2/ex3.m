@@ -119,7 +119,7 @@ end
 if show_q4
     
     img1 = double(imread('left.jpg'));
-    img2 = double(imread('right.jpg'));
+    img2 = double(imread('right.jpg'));    
     [x1,y1,x2,y2] = get_corresponding_points(img1, img2);
     
     % Homography Estimation with RANSAC
@@ -130,6 +130,8 @@ if show_q4
     
     % display result image
     figure(11);
-    clf;
-    imshow(imgRes);
+    clf;    
+    colormap(gray);
+%     imshow(imgRes);
+    imagesc(imgRes);
 end

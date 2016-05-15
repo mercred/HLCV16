@@ -41,18 +41,18 @@ function img = pan_sample(img1,img2,H,sz,st)
         
         %% Intensity Adjustment (Question 4c)    
         % linear weighting according to distance in horizontal direction
-        img(y,x) = (gray_left*(width-x) + gray_right*(x-width+st))/st;
+        img(y,x) = (gray_left*abs(width-x) + gray_right*abs(x-width+st))/st;
     % end loop
     end
   end
   
-  % Copy part of the right image that does not overlap  
-  for x = width+1:width+sz
+  % Copy part of the right image that does not overlap
+  w = min(width, size(img2,2))
+  for x = w-st:w
       for y = 1:height
-        hom = H*[x;y;1];
-        cart = [hom(1)/hom(3), hom(2)/hom(3)];
-        gray_value = interpolate_2d(img2, cart(2), cart(1));
-        img(y,x) = gray_value;
+        left = img(y,x);
+        right = img2(y,x);
+        img(y,x) = (left*(w-x) + right*(x-w+st))/st;
       end
   end
 end

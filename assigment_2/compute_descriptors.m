@@ -11,15 +11,14 @@
 function D = compute_descriptors(desc_func, img, px, py, desc_size, num_bins)
   
   desc_radius = round((desc_size-1)/2);
-  [max_y, max_x, z] = size(img);
-  
+  [max_y, max_x, z] = size(img);  
   left = max(1, px - desc_radius);
   rigth = min(px + desc_radius, max_x);
   top = max(1, py - desc_radius);
-  botton = min(py + desc_radius, max_y);
+  bottom = min(py + desc_radius, max_y);
     
   for i = 1:length(px)
-      D(i,:)=desc_func(img(top(i):botton(i),left(i):rigth(i),:), num_bins);
+      D(i,:)=desc_func(img(top(i):bottom(i),left(i):rigth(i),:), num_bins);
   end
 % ... 
   
