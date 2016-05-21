@@ -2,3 +2,8 @@
 *.png
 *.ppm
 *.pgm
+*.jpg
+*.bmp
+
+# ignore pdf documents
+*.pdf
