@@ -29,7 +29,7 @@ function h = comp_cell_hist(PARAMS, img_cell_mag, img_cell_ori)
 
   h = zeros(1,PARAMS.hist_numbins);
   
-  img_cell_ori = floor((img_cell_ori + pi) / (2*pi / PARAMS.hist_numbins)) + 1;
+  img_cell_ori = floor((img_cell_ori + pi/2) / (pi / PARAMS.hist_numbins)) + 1;
   
   for i = 1:length(img_cell_ori)
     h(img_cell_ori(i)) = h(img_cell_ori(i)) + img_cell_mag(i);
