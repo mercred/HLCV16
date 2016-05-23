@@ -1,8 +1,8 @@
 addpath('./svm');
 
 show_q1 = false;
-show_q2 = true;
-show_q3 = false;
+show_q2 = false;
+show_q3 = true;
 
 
 %

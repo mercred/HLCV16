@@ -16,6 +16,22 @@
 %
 
 function show_false_detections(figidx, pos_test_list, pos_class_score, neg_test_list, neg_class_score, num_show)
-
+    figure(figidx);
+    
+    [a, pos] = sort(pos_class_score);
+    [a, neg] = sort(neg_class_score);
+    neg = flip(neg);
+    
+    for i = 1:num_show
+        I1 = imread(pos_test_list{pos(i)});
+        %I1 = double(rgb2gray(I1));
+        subplot(2, num_show, i);
+        imshow(I1);
+        
+        I1 = imread(neg_test_list{neg(i)});
+        %I1 = double(rgb2gray(I1));
+        subplot(2, num_show, i+num_show);
+        imshow(I1);
+    end
 % ...
 

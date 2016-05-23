@@ -7,3 +7,6 @@
 
 # ignore pdf documents
 *.pdf
+
+# ignore some binary files
+*.mat
