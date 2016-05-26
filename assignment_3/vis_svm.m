@@ -30,10 +30,13 @@ function vis_svm(X, y, model)
   hold on;
   plot(X_sv(:,1), X_sv(:,2), 'ro', 'MarkerSize', 10);    
 
-  % visualze decision boundary      
-   x= linspace(-3, 3, 20);
-   y= -model.w(1,1)*x/ model.w(2,1);
-   plot(x,y);
+  % visualze decision boundary
+  % Find fx = ax + b
+   y = y(ind);
+   b = 1/y(1) - sum(val.*y.*X_sv(1));
+   x= linspace(-3, 3, 20);   
+   fx= -model.w(1,1)*x/ model.w(2,1) + b; 
+   plot(x,fx);
     
   % end of visualize boundary
   
