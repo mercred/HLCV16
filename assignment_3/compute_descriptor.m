@@ -41,7 +41,11 @@ function [DESC, CELLS] = compute_descriptor(PARAMS, img)
           %
           v = [CELLS{by, bx},CELLS{by+1, bx},CELLS{by, bx+1},CELLS{by+1, bx+1}];
           v= v(:);
-          v = v/norm(v);
+          
+          L2 = sqrt(sum(v.^2) + PARAMS.eps^2);
+          v = v / L2;
+%           v = v/norm(v);
+
 
           DESC = [DESC; v];
       end
