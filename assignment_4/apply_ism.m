@@ -7,11 +7,11 @@ function [detections, acc] = apply_ism(imgname, cluster_centers, cluster_occurre
     image = rgb2gray(imread(imgname));
     img = single(image);
     
-    
+    %{
     figure(3)
     subplot(2, 1, 1);
     imshow(image); hold on;
-    
+    %}
     
     [px, py, H]=hessian(double(img), PARAMS.hessian_sigma, PARAMS.hessian_thresh);
     positions = [py';px'];
@@ -44,13 +44,13 @@ function [detections, acc] = apply_ism(imgname, cluster_centers, cluster_occurre
     sortingIndexes = flip(sortingIndexes);
     acc = flip(vals);
     
-    [x,y] = getCordinates(sortingIndexes, size(votes, 1))
+    [x,y] = getCordinates(sortingIndexes, size(votes, 1));
     x = x .* 10 - 5;
     y = y .* 10 - 5;
     
     detections = [y';x'];
 
-    
+    %{
     [x1,y1] = getCordinates(sortingIndexes(1), size(votes, 1))
     x1 = x1 * 10 - 5;
     y1 = y1 * 10 - 5;
@@ -58,7 +58,7 @@ function [detections, acc] = apply_ism(imgname, cluster_centers, cluster_occurre
     plot(x1,y1, 'x', 'Color', 'r'); hold on;
     subplot(2, 1, 2);
     imshow(votes);
-    
+    %}
     
     function [x,y] = getCordinates(index, dim_y)
         x = floor(index ./ dim_y);

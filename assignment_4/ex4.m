@@ -35,7 +35,10 @@ end
 %
 
 if show_q3
-   imgname = './cars-test/test-4.png';
-  [detections, acc] = apply_ism(imgname, cluster_centers, cluster_occurrences);
-  draw_detections(imgname, detections);
+    for i = 1:10
+       imgname = sprintf('./cars-test/test-%d.png',i);
+       %imgname = './cars-test/test-1.png';
+       [detections, acc] = apply_ism(imgname, cluster_centers, cluster_occurrences);
+       draw_detections(imgname, detections, 3+i, acc);
+    end
 end
