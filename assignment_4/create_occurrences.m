@@ -18,8 +18,8 @@ function cluster_occurrences = create_occurrences(sDir, cluster_centers)
         distance = bsxfun(@minus, cluster_centers, features(:,k)).^2;
         distance = sqrt(sum(distance));
         indexes = find(distance < PARAMS.match_tresh);
-        
-        v = size(img)' ./ 2 - positions(:,k);
+        center_coord=size(img)./ 2;
+        v=[center_coord(1)-positions(1,k) positions(2,k)-center_coord(2)]';       
         for n = 1:length(indexes)
             %append(cluster_occurrences{indexes(n)}, v);
             cluster_occurrences{indexes(n)} = [cluster_occurrences{indexes(n)}, v];
