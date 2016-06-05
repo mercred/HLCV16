@@ -6,6 +6,7 @@ function draw_detections(imgname, detections, window_id, acc)
     box_y_size = 35;
     figure(window_id)
     imshow(image); hold on;
+    cars_list = [];
     
     threshold = 1.5;
     i = 1;
@@ -15,7 +16,7 @@ function draw_detections(imgname, detections, window_id, acc)
         bounding_box_y = [detections(1,i) - box_y_size, detections(1,i) - box_y_size, detections(1,i) + box_y_size, detections(1,i) + box_y_size, detections(1,i) - box_y_size];
         
         if i > 1
-            if if_overlap(detections(:,i), detections(:,1:i-1), 1.5* box_x_size)
+            if if_overlap(detections(:,i), cars_list, 1.5* box_x_size)
                 i = i + 1;
                 continue;
             end
@@ -23,7 +24,7 @@ function draw_detections(imgname, detections, window_id, acc)
         
         plot(bounding_box_x, bounding_box_y, 'Color', 'g'); hold on;
         plot(detections(2,i), detections(1,i), 'x', 'Color', 'r'); hold on;
-        
+        cars_list = [cars_list, detections(:,i)];
         i = i+1;
     end
   % ... 
