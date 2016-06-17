@@ -81,13 +81,31 @@ for set = 1:length(sets)
             image_counter = image_counter + 1;
         end
          %%%%%%% Supplement Code.
-         %%%% Supplement code here to do mean subtraction.
+         %%%% Supplement code here to do mean subtraction.        
+         if (set == 1)
+             % Train set only
+             inds = imdb.images.set == set;
+             data = imdb.images.data(:,:,:, inds);             
+             N = size(data,4);
+             
+             % Compute mean image
+             mean_img = zeros(image_size);
+             for i = 1:N
+                 mean_img = mean_img + data(:,:,:,i);             
+             end
+             mean_img = mean_img / N;             
+             
+             % Subtract mean image                          
+             for i = 1:total_images
+                 if inds(i) > 0
+                     imdb.images.data(:,:,:,i) = imdb.images.data(:,:,:,i) - mean_img;
+                 end                 
+             end 
+         end         
          %%%%%%%
+         
 
     end
 end
-
-menImage = sum(imdb.images.data, 4) / size(imdb.images.data, 4);
-imdb.images.data = bsxfun(@minus, imdb.images.data, menImage);
 
 

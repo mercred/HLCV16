@@ -13,27 +13,20 @@ function [im, labels] = getBatch_1(imdb, batch)
 %This function is where you should 'jitter' data.
 
 % Add jittering here before returning im
-im2 = imdb.images.data(:,:,:,batch) ;
-labels2 = imdb.images.labels(1,batch) ;
+im = imdb.images.data(:,:,:,batch) ;
+labels = imdb.images.labels(1,batch) ;
 
 %%% Supplement Code
 % Supplement code here! 
 % --------------------------------------------------------------------
-
-im = zeros(size(im2, 1), size(im2, 2), size(im2, 3), size(im2, 4) * 2, 'single');
-labels = zeros(1,length(labels2) * 2, 'single');
-labels(1:length(labels2)) = labels2;
-labels(length(labels2)+1:length(labels2)*2) = labels2;
-im(:,:,:,1:size(im2, 4)) = im2;
-x = size(im2, 4);
-for i = 1:x
-    im(:,:,1,x+i) = fliplr(im2(:,:,1,i));
+batchSize = size(batch, 2);
+for i = 1:batchSize            
+    if rand() > 0.5
+        % Randomly flip image from left to right
+        image = im(:,:,:,i);             
+        flipped_img = flip(image,2);        
+        im(:,:,:,i) = flipped_img;   
+    end    
 end
 
-%{
-x = size(im, 4);
-for i = 1:x
-    im(:,:,1,i) = fliplr(im(:,:,1,i));
-end
-%}
 end
