@@ -35,7 +35,7 @@ net.layers{end+1} = struct('type', 'relu') ;
 %Supplement Code Here
 % Insert Dropout layer here.       
 net.layers{end+1} = struct('type', 'dropout', ...                           
-                           'rate', 0.25);
+                           'rate', 0.75);
 
 
 net.layers{end+1} = struct('type', 'conv', ...
