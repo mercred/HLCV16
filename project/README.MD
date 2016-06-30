@@ -1,3 +1,7 @@
+# How to use the code?
+1. Download data from Kaggle, https://www.kaggle.com/c/state-farm-distracted-driver-detection/data
+2. Go to current folder (e.g. project). Folder 'project' should contain starter code, folder 'imgs' that has train and test subfolder with images.
+
 # TODO
 1. Speed up data loading. Maybe save it as pickle dump for future uses.
 Checkout this link https://www.kaggle.com/inoryy/state-farm-distracted-driver-detection/fast-image-pre-process-in-parallel/discussion
@@ -9,10 +13,6 @@ Checkout this link https://www.kaggle.com/inoryy/state-farm-distracted-driver-de
 2. Improve on baseline using data jittering, augmentation, mean img subtraction, etc.
 3. Use pretrained network to do transfer learning
 4. Try RCNN, R*CNN, or some other model.
-
-# Kaggle competition link and data link
-1. Competition: https://www.kaggle.com/c/state-farm-distracted-driver-detection
-2. Data: https://www.kaggle.com/c/state-farm-distracted-driver-detection/data
 
 # Important dates
 1. 11.07 Interim presentation (progress report / problems encountered / feedback)
