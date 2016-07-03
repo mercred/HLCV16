@@ -19,6 +19,27 @@ from sklearn.utils import shuffle
 from sklearn.preprocessing import LabelEncoder
 from sklearn.cross_validation import train_test_split
 
+
+# Fix a bug in printing SVG
+import sys
+if sys.platform == 'win32':
+    print("Monkey-patching pydot")
+    import pydot
+
+    def force_find_graphviz(graphviz_root):
+        binpath = os.path.join(graphviz_root, 'bin')
+        programs = 'dot twopi neato circo fdp sfdp'
+        def helper():
+            for prg in programs.split():
+                if os.path.exists(os.path.join(binpath, prg)):
+                    yield ((prg, os.path.join(binpath, prg)))
+                elif os.path.exists(os.path.join(binpath, prg+'.exe')):
+                    yield ((prg, os.path.join(binpath, prg+'.exe')))
+        progdict = dict(helper())
+        return lambda: progdict
+
+    pydot.find_graphviz = force_find_graphviz('c:/Program Files (x86)/Graphviz2.34/')
+
 import lasagne
 from lasagne.layers import helper
 from lasagne.updates import adam
