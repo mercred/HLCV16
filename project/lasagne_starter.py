@@ -69,7 +69,8 @@ def load_train_cv(encoder):
         files = glob.glob(path)        
         for fl in files:        	
             img = cv2.imread(fl,0)            
-            img = cv2.resize(img, (PIXELS, PIXELS))                                   
+            img = cv2.resize(img, (PIXELS, PIXELS))   
+            #cv2.imread()
             mean_img += img
             #img = np.reshape(img, (1, num_features))            
             X_train.append(img)
@@ -162,6 +163,7 @@ Set up all theano functions
 BATCHSIZE = 32
 LR = 0.001
 ITERS = 1
+MAX_WORSENING_EPOCHE = 3;
 
 X = T.tensor4('X')
 Y = T.ivector('y')
@@ -203,10 +205,15 @@ print('Train shape:', train_X.shape, 'Test shape:', valid_X.shape)
 
 # load data
 X_test, X_test_id = load_test()
+best_val_acc = 0;
+worsening_epoche = 0;
+epoch = 1
+
 
 # loop over training functions for however many iterations, print information while training
 try:
-    for epoch in range(ITERS):
+    #for epoch in range(ITERS):
+    while True:
         # do the training
         start = time.time()
         # training batches
@@ -230,7 +237,18 @@ try:
         end = time.time() - start
         # print training details
         print('iter:', epoch, '| TL:', np.round(train_loss,decimals=3), '| VL:', np.round(valid_loss, decimals=3), '| Vacc:', np.round(valid_acc, decimals=3), '| Ratio:', np.round(ratio, decimals=2), '| Time:', np.round(end, decimals=1))
-
+        
+        epoch += 1
+        #save network parameters if reach better acc
+        if best_val_acc < valid_acc:
+            with open('net.net', "wb") as f:
+                np.save(f, lasagne.layers.get_all_param_values(output_layer))
+            best_val_acc = valid_acc
+            worsening_epoche = 0
+        else:   
+            worsening_epoche += 1
+            if worsening_epoche == MAX_WORSENING_EPOCHE:
+                break
 except KeyboardInterrupt:
     pass
 
