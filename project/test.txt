@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 c0,img_15934.jpg
 c0,img_18806.jpg
 c0,img_96427.jpg
@@ -3200,10 +3199,3 @@ c9,img_93821.jpg
 c9,img_93024.jpg
 c9,img_64772.jpg
 c9,img_36402.jpg
-=======
-('c0', 'img_22403.jpg'),('c0', 'img_11860.jpg')
-('c0', 'img_15934.jpg'),('c0', 'img_18806.jpg')
-('c0', 'img_44073.jpg'),('c0', 'img_10570.jpg')
-('c0', 'img_14047.jpg'),('c0', 'img_3939.jpg')
-('c0', 'img_71021.jpg'),('c0', 'img_99696.jpg')
->>>>>>> 72b8d7b9fa31386a731b9da0e0c5b01ec17b6f57
