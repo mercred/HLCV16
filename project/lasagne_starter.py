@@ -52,7 +52,7 @@ from theano import tensor as T
 from loader import load_train_cv, load_test
 from net_functions import getFunctions
 
-PIXELS = 24
+PIXELS = 64
 imageSize = PIXELS * PIXELS
 num_features = imageSize 
 

@@ -27,7 +27,7 @@ def write_to_file(setName,set_to_write,d):
 #validation_percentage-Percentage of validation set from all training images
 def performSplit(test_percentage,validation_percentage):
     d = {}
-    wb = openpyxl.load_workbook('driver_imgs_list.xlsx')
+    wb = openpyxl.load_workbook('driver_imgs_list.csv')
     sheet = wb.get_sheet_by_name('driver_imgs_list')
     for cellObj in sheet.columns[0]:
         target,category,image=cellObj.value.split(',')
@@ -45,3 +45,4 @@ def performSplit(test_percentage,validation_percentage):
     write_to_file(VALIDATION_NAME,valid_set,d)
     write_to_file(TESTING_NAME,test_set,d)
 
+performSplit(0.2, 0.2)
