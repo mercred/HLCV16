@@ -25,6 +25,7 @@ from lasagne.updates import adam
 from lasagne.nonlinearities import rectify, softmax
 from lasagne.layers import InputLayer, MaxPool2DLayer, DenseLayer, DropoutLayer, helper
 from lasagne.layers import Conv2DLayer as ConvLayer
+from lasagne.regularization import regularize_layer_params_weighted, l2, l1
 
 import theano
 from theano import tensor as T
@@ -57,6 +58,8 @@ def getFunctions(pixel, LR = 0.001):
 
     # set up the loss that we aim to minimize, when using cat cross entropy our Y should be ints not one-hot
     loss = lasagne.objectives.categorical_crossentropy(output_train, Y)
+    penalty = lasagne.regularization.regularize_layer_params(output_layer, l1) * 5e-4
+    loss = loss + penalty
     loss = loss.mean()
 
     # set up loss functions for validation dataset

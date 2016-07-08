@@ -55,7 +55,6 @@ from net_functions import getFunctions
 PIXELS = 24
 imageSize = PIXELS * PIXELS
 num_features = imageSize 
-#mean_img = np.zeros((PIXELS, PIXELS), dtype='uint16')
 
 
 '''
