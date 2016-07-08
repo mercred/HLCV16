@@ -49,106 +49,18 @@ from lasagne.layers import Conv2DLayer as ConvLayer
 
 import theano
 from theano import tensor as T
+from loader import load_train_cv, load_test
+from net_functions import getFunctions
 
-'''
-Loading data functions
-'''
 PIXELS = 24
 imageSize = PIXELS * PIXELS
 num_features = imageSize 
-mean_img = np.zeros((PIXELS, PIXELS), dtype='uint16')
-
-def load_train_cv(encoder):
-    global mean_img
-    X_train = []
-    y_train = []
-    print('Read train images')        
-    for j in range(10):
-        print('Load folder c{}'.format(j))
-        path = os.path.join('imgs', 'train', 'c' + str(j), '*.jpg')
-        files = glob.glob(path)        
-        for fl in files:        	
-            img = cv2.imread(fl,0)            
-            img = cv2.resize(img, (PIXELS, PIXELS))   
-            #cv2.imread()
-            mean_img += img
-            #img = np.reshape(img, (1, num_features))            
-            X_train.append(img)
-            y_train.append(j)
-
-    # mean img subtraction    
-    mean_img = mean_img / len(X_train)    
-    for i, img in enumerate(X_train):
-        img -= mean_img
-        img = np.reshape(img, (1, num_features))      
-        X_train[i] = img
-        
-    X_train = np.array(X_train)
-    y_train = np.array(y_train)
-
-    y_train = encoder.fit_transform(y_train).astype('int32')
-
-    X_train, y_train = shuffle(X_train, y_train)
-
-    X_train, X_test, y_train, y_test = train_test_split(X_train, y_train, test_size=0.1)
-
-    X_train = X_train.reshape(X_train.shape[0], 1, PIXELS, PIXELS).astype('float32') / 255.
-    X_test = X_test.reshape(X_test.shape[0], 1, PIXELS, PIXELS).astype('float32') / 255.
-
-    return X_train, y_train, X_test, y_test, encoder
-
-def load_test():
-    print('Read test images')
-    path = os.path.join('imgs', 'test', '*.jpg')
-    files = glob.glob(path)
-    X_test = []
-    X_test_id = []
-    total = 0
-    thr = math.floor(len(files)/10)
-    for fl in files:
-        flbase = os.path.basename(fl)
-        img = cv2.imread(fl,0)
-        img = cv2.resize(img, (PIXELS, PIXELS))
-        
-        # mean img subtraction
-        global mean_img
-        img = img - mean_img
-        
-        #img = img.transpose(2, 0, 1)
-        img = np.reshape(img, (1, num_features))
-        X_test.append(img)
-        X_test_id.append(flbase)
-        total += 1
-        if total%thr == 0:
-            print('Read {} images from {}'.format(total, len(files)))
-
-    X_test = np.array(X_test)
-    X_test_id = np.array(X_test_id)
-
-    X_test = X_test.reshape(X_test.shape[0], 1, PIXELS, PIXELS).astype('float32') / 255.
-
-    return X_test, X_test_id
+#mean_img = np.zeros((PIXELS, PIXELS), dtype='uint16')
 
 
 '''
 Lasagne Model ZFTurboNet and Batch Iterator
 '''
-def ZFTurboNet(input_var=None):
-    l_in = InputLayer(shape=(None, 1, PIXELS, PIXELS), input_var=input_var)
-
-    l_conv = ConvLayer(l_in, num_filters=64, filter_size=3, pad=1, nonlinearity=rectify)
-    l_convb = ConvLayer(l_conv, num_filters=128, filter_size=3, pad=1, nonlinearity=rectify)
-    l_pool = MaxPool2DLayer(l_convb, pool_size=2) # feature maps 12x12
-    l_dropout1 = DropoutLayer(l_pool, p=0.5)
-    l_convc = ConvLayer(l_dropout1, num_filters=256, filter_size=5, pad=1, nonlinearity=rectify)
-    l_pool2 = MaxPool2DLayer(l_convc, pool_size=3) # feature maps 12x12
-    l_dropout2 = DropoutLayer(l_pool2, p=0.5)
-    l_hidden = DenseLayer(l_dropout2, num_units=512, nonlinearity=rectify)    
-
-    l_out = DenseLayer(l_hidden, num_units=10, nonlinearity=softmax)
-
-    return l_out
-
 def iterate_minibatches(inputs, targets, batchsize):
     assert len(inputs) == len(targets)
     indices = np.arange(len(inputs))
@@ -161,38 +73,8 @@ def iterate_minibatches(inputs, targets, batchsize):
 Set up all theano functions
 """
 BATCHSIZE = 32
-LR = 0.001
-ITERS = 1
 MAX_WORSENING_EPOCHE = 3;
-
-X = T.tensor4('X')
-Y = T.ivector('y')
-
-# set up theano functions to generate output by feeding data through network, any test outputs should be deterministic
-output_layer = ZFTurboNet(X)
-output_train = lasagne.layers.get_output(output_layer)
-output_test = lasagne.layers.get_output(output_layer, deterministic=True)
-
-# set up the loss that we aim to minimize, when using cat cross entropy our Y should be ints not one-hot
-loss = lasagne.objectives.categorical_crossentropy(output_train, Y)
-loss = loss.mean()
-
-# set up loss functions for validation dataset
-valid_loss = lasagne.objectives.categorical_crossentropy(output_test, Y)
-valid_loss = valid_loss.mean()
-
-valid_acc = T.mean(T.eq(T.argmax(output_test, axis=1), Y), dtype=theano.config.floatX)
-
-# get parameters from network and set up sgd with nesterov momentum to update parameters
-params = lasagne.layers.get_all_params(output_layer, trainable=True)
-updates = adam(loss, params, learning_rate=LR)
-
-# set up training and prediction functions
-train_fn = theano.function(inputs=[X,Y], outputs=loss, updates=updates)
-valid_fn = theano.function(inputs=[X,Y], outputs=[valid_loss, valid_acc])
-
-# set up prediction function
-predict_proba = theano.function(inputs=[X], outputs=output_test)
+train_fn, valid_fn, predict_proba, output_layer = getFunctions(PIXELS);
 
 '''
 load training data and start training
@@ -200,11 +82,11 @@ load training data and start training
 encoder = LabelEncoder()
 
 # load the training and validation data sets
-train_X, train_y, valid_X, valid_y, encoder = load_train_cv(encoder)
+train_X, train_y, valid_X, valid_y, encoder, mean_img = load_train_cv(encoder, PIXELS, num_features)
 print('Train shape:', train_X.shape, 'Test shape:', valid_X.shape)
 
 # load data
-X_test, X_test_id = load_test()
+X_test, X_test_id = load_test(PIXELS, num_features, mean_img)
 best_val_acc = 0;
 worsening_epoche = 0;
 epoch = 1
@@ -251,6 +133,22 @@ try:
                 break
 except KeyboardInterrupt:
     pass
+    
+valid_loss = []
+valid_acc = []
+for batch in iterate_minibatches(train_X, train_y, BATCHSIZE):
+    inputs, targets = batch
+    valid_eval = valid_fn(inputs, targets)
+    valid_loss.append(valid_eval[0])
+    valid_acc.append(valid_eval[1])
+valid_loss = np.mean(valid_loss)
+valid_acc = np.mean(valid_acc)
+# get ratio of TL to VL
+ratio = train_loss / valid_loss
+end = time.time() - start
+# print training details
+print('Finall Tacc:', np.round(valid_acc, decimals=3))
+
 
 '''
 Make Submission
