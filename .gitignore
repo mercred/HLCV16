@@ -9,3 +9,4 @@
 
 # ignore some binary files
 *.mat
+project/VGG-16 layers visualization/vgg16_weights.h5

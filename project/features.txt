@@ -1,0 +1,12 @@
+c0 mostly 2 hands in parallel, head/look angle <90
+c9 dump class, head angle >90
+
+c1 mobile phone in right hand around hips, significant distance from hand to face
+c3 mobile phone in left hand around hips,significant distance from hand to face
+c5 right hand wide angle off the wheel
+c7 right hand not visible/angle around 225.
+
+c8 steep left/right hand angle, wrist around face, nothing in the hand
+c6 bottle/can/thermos in right hand,steep elbow angle, hand close to face
+c4 steep left elbow angle, wrist around face, piece of phone/none
+c2 mobile phone in right hand near face, steep elbow angle
